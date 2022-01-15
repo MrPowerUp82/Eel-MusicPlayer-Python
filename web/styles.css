@@ -29,6 +29,10 @@ body{
     margin-bottom: 10px;
 }
 
+.controls div:active{
+    opacity: 0.7;
+}
+
 .feather-45{
     width: 45px;
     height: 45px;
@@ -36,9 +40,6 @@ body{
     margin-right: 10px;
 }
 
-.feather-45:hover{
-    opacity: 0.7;
-}
 
 .musicName{
     font-weight: bold;
