@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PySound 1.0</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="/eel.js"></script>
+    <script src="feather.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="imgBox">
+            <img src="img.jpg" alt="" />
+        </div>
+        <div class="musicName">
+            <h1 id="musicName">Music</h1>
+        </div>
+        <div class="controls">
+            <div onclick="prev_sound()">
+                <i class="feather-45" data-feather="arrow-left"></i>
+            </div>
+            <div class="play" onclick="play_music()">
+                <i class="feather-45" data-feather="play" color="black"></i>
+            </div>
+            <div onclick="next_sound()">
+                <i class="feather-45" data-feather="arrow-right"></i>
+            </div>
+        </div>
+        <div>
+            <input id="path" type="text" value=""/>
+            <button onclick="">Update</button>
+        </div>
+    </div>
+    <script>
+        feather.replace()
+    </script>
+    <script>
+        let input = document.querySelector('#path')
+        let musicName = document.querySelector('#musicName')
+        let playState = document.querySelector('.play')
+        let isPlaying = false
+        let firstPlay = false
+        let path
+        let sounds
+
+        async function get_path(){
+            let username = await eel.get_username()()
+            let musics = await eel.get_musics(`C:\\Users\\${username}\\Music`)()
+            sounds = musics
+            path = `C:\\Users\\${username}\\Music`
+            input.value = `C:\\Users\\${username}\\Music`
+            musicName.innerHTML = musics[0]
+            console.log(musics, username)
+        }
+        async function prev_sound(){
+            let name = await eel.prev(path,sounds,musicName.innerHTML)()
+            console.log(name)
+            playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
+            isPlaying = true
+            firstPlay = true
+            feather.replace()
+            musicName.innerHTML = name
+        }
+        async function next_sound(){
+            let name = await eel.next(path,sounds,musicName.innerHTML)()
+            console.log(name)
+            playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
+            isPlaying = true
+            firstPlay = true
+            feather.replace()
+            musicName.innerHTML = name
+        }
+        async function update_musics(){
+            path_addr = input.value
+            let musics = await eel.get_musics(path_addr)()
+            sounds = musics
+            path = path_addr
+        }
+        async function play_music(){
+
+            async function play_sound(){
+                path_addr = input.value
+                let musics = await eel.get_musics(path_addr)()
+                sounds = musics
+                path = path_addr
+                let name = await eel.play(path,sounds)()
+                console.log(playState.classList[4])
+                playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
+                isPlaying = true
+                firstPlay = true
+                feather.replace()
+                musicName.innerHTML = name
+            }
+            async function pause_music(){
+                await eel.pause()()
+                playState.innerHTML = '<i class="feather-45" data-feather="play" color="black"></i>'
+                isPlaying = false
+                feather.replace()
+            }
+            async function unpause_music(){
+                await eel.unpause()()
+                playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
+                isPlaying = true
+                feather.replace()
+            }
+            if(firstPlay && !isPlaying ){
+                unpause_music()
+            }
+            if(isPlaying){
+                pause_music()
+            }
+            if (!isPlaying && !firstPlay){
+                play_sound()
+            }
+        }
+        get_path()
+    </script>
+</body>
+</html>

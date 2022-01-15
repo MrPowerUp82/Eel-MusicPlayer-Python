@@ -1,0 +1,56 @@
+body{
+    background-color:#000000;
+    margin:0;
+    color: #fff;
+}
+
+.container{
+    display: flex;
+    margin-top: 50px;
+    flex:1;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    flex-direction: column;
+}
+
+.imgBox img{
+    height:300px;
+    width:300px;
+}
+
+
+.controls{
+    flex: 1;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.feather-45{
+    width: 45px;
+    height: 45px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.feather-45:focus{
+    opacity: 0.7;
+}
+
+.musicName{
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.play{
+    background-color:#fff;
+    padding:10px;
+    border-radius: 50%;
+    text-align: center;
+}
+.play i{
+    background-color:#000;
+}
