@@ -51,7 +51,7 @@ def get_username():
 
 @eel.expose
 def get_musics(path):
-    return [x for x in os.listdir(path) if '.mp3' in x]
+    return [x for x in os.listdir(path) if '.mp3' in x or '.wav' in x or 'ogg' in x or 'wma' in x or 'aac' in x]
 
 @eel.expose
 def play(path,sounds):
