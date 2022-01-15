@@ -30,7 +30,7 @@
         </div>
         <div>
             <input id="path" type="text" value=""/>
-            <button onclick="">Update</button>
+            <button onclick="update_musics()">Update</button>
         </div>
     </div>
     <script>
@@ -75,8 +75,14 @@
         async function update_musics(){
             path_addr = input.value
             let musics = await eel.get_musics(path_addr)()
+            musicName.innerHTML = musics[0]
             sounds = musics
             path = path_addr
+            playState.innerHTML = '<i class="feather-45" data-feather="play" color="black"></i>'
+            await eel.stop_music()()
+            firstPlay = false
+            isPlaying = false
+            feather.replace()
         }
         async function play_music(){
 

@@ -5,7 +5,12 @@ from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds
 
 eel.init('web')
 
-@eel.expose()
+@eel.expose
+def stop_music():
+    stop_sounds()
+
+
+@eel.expose
 def next(path,sounds, atual):
     stop_sounds()
     idx = sounds.index(atual)
@@ -18,7 +23,7 @@ def next(path,sounds, atual):
         play_sound(path+'\\'+sounds[idx_next])
         return sounds[idx_next]
 
-@eel.expose()
+@eel.expose
 def prev(path,sounds, atual):
     stop_sounds()
     idx = sounds.index(atual)
