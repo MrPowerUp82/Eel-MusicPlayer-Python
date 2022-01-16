@@ -27,6 +27,7 @@ body{
     justify-content:center;
     flex-direction: row;
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .controls div:active{

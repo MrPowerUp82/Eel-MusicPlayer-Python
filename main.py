@@ -1,7 +1,7 @@
 from distutils.log import error
 import eel
 import os
-from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds
+from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume
 
 eel.init('web')
 
@@ -9,6 +9,14 @@ eel.init('web')
 def stop_music():
     stop_sounds()
 
+
+@eel.expose
+def volume_info():
+    return get_volume()
+
+@eel.expose
+def volume_mixer(vol):
+    set_volume(vol)
 
 @eel.expose
 def next(path,sounds, atual):

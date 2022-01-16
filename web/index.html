@@ -21,7 +21,11 @@
         <div class="musicName">
             <h1 id="musicName">Music</h1>
         </div>
+        <span id="volume"></span>
         <div class="controls">
+            <div onclick="upper_music()">
+                <button>+</button>
+            </div>
             <div onclick="prev_sound()">
                 <i class="feather-45" data-feather="arrow-left"></i>
             </div>
@@ -30,6 +34,9 @@
             </div>
             <div onclick="next_sound()">
                 <i class="feather-45" data-feather="arrow-right"></i>
+            </div>
+            <div onclick="lower_music()">
+                <button>-</button>
             </div>
         </div>
         <div>
@@ -44,8 +51,10 @@
         let input = document.querySelector('#path')
         let musicName = document.querySelector('#musicName')
         let playState = document.querySelector('.play')
+        let volSpan = document.querySelector('#volume')
         let isPlaying = false
         let firstPlay = false
+        let volume
         let path
         let sounds
 
@@ -56,11 +65,9 @@
             path = `C:\\Users\\${username}\\Music`
             input.value = `C:\\Users\\${username}\\Music`
             musicName.innerHTML = musics[0]
-            console.log(musics, username)
         }
         async function prev_sound(){
             let name = await eel.prev(path,sounds,musicName.innerHTML)()
-            console.log(name)
             playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
             isPlaying = true
             firstPlay = true
@@ -69,7 +76,6 @@
         }
         async function next_sound(){
             let name = await eel.next(path,sounds,musicName.innerHTML)()
-            console.log(name)
             playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
             isPlaying = true
             firstPlay = true
@@ -88,6 +94,28 @@
             isPlaying = false
             feather.replace()
         }
+        async function upper_music(){
+            volume = volume + 0.10
+            if(volume > 1.0){
+                volume = 1.0
+            }
+            if(volume < 0){
+                volume = 0
+            }
+            volSpan.innerHTML = String(Math.floor(volume*100))+"%"
+            await eel.volume_mixer(volume)()
+        }
+        async function lower_music(){
+            volume = volume - 0.10
+            if(volume > 1.0){
+                volume = 1.0
+            }
+            if(volume < 0){
+                volume = 0
+            }
+            volSpan.innerHTML = String(Math.floor(volume*100))+"%"
+            await eel.volume_mixer(volume)()
+        }
         async function play_music(){
 
             async function play_sound(){
@@ -96,7 +124,10 @@
                 sounds = musics
                 path = path_addr
                 let name = await eel.play(path,sounds)()
-                console.log(playState.classList[4])
+                let vol = await eel.volume_info()()
+                console.log(vol)
+                volSpan.innerHTML= String(Math.floor(vol*100))+"%"
+                volume = vol
                 playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
                 isPlaying = true
                 firstPlay = true

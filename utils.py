@@ -21,3 +21,9 @@ def is_sound_working():
         return True
     
     return False
+
+def get_volume():
+    return mixer.music.get_volume()
+
+def set_volume(vol):
+    mixer.music.set_volume(vol)
