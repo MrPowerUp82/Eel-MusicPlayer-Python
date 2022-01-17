@@ -2,9 +2,14 @@ from distutils.log import error
 import eel
 import os
 import sys
-from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume
+from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume, get_art
 
 eel.init('web')
+
+
+@eel.expose
+def art(path,sound):
+    return get_art(path+'\\'+sound)
 
 @eel.expose
 def stop_music():

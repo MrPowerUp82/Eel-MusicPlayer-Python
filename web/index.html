@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PySound 1.5</title>
+    <title>PySound 1.7</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="imgBox">
-            <img src="img.jpg" alt="" />
+            <img id="cover" src="img.jpg" alt="" />
         </div>
         <div class="musicName">
             <h1 id="musicName">Music</h1>
@@ -52,6 +52,7 @@
         let musicName = document.querySelector('#musicName')
         let playState = document.querySelector('.play')
         let volSpan = document.querySelector('#volume')
+        let imageCover = document.querySelector('#cover')
         let isPlaying = false
         let firstPlay = false
         let volume
@@ -71,6 +72,8 @@
             playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
             isPlaying = true
             firstPlay = true
+            let cover_path = await eel.art(path,name)()
+            imageCover.src = cover_path
             feather.replace()
             musicName.innerHTML = name
         }
@@ -79,6 +82,8 @@
             playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
             isPlaying = true
             firstPlay = true
+            let cover_path = await eel.art(path,name)()
+            imageCover.src = cover_path
             feather.replace()
             musicName.innerHTML = name
         }
@@ -128,6 +133,8 @@
                 console.log(vol)
                 volSpan.innerHTML= String(Math.floor(vol*100))+"%"
                 volume = vol
+                let cover_path = await eel.art(path,name)()
+                imageCover.src = cover_path
                 playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
                 isPlaying = true
                 firstPlay = true

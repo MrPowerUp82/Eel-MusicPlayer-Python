@@ -1,4 +1,4 @@
-# PySound 1.5
+# PySound 1.7
 
 ## Instalação das Libs
 
