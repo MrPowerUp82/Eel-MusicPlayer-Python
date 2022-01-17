@@ -1,6 +1,7 @@
 from distutils.log import error
 import eel
 import os
+import sys
 from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume
 
 eel.init('web')
@@ -55,7 +56,16 @@ def pause():
 
 @eel.expose
 def get_username():
-    return os.environ.get('USERNAME')
+    username = os.environ.get('USERNAME')
+    system = sys.platform
+    if system == 'win32':
+        return [username,f'C:\\Users\\{username}\\Music']
+    if (system == 'linux' or system == 'linux2') and username == 'root':
+        return [username,f'/{username}/Music/']
+    if system == 'linux' or system == 'linux2':
+        return [username,f'/home/{username}/Music/']
+    
+    return 
 
 @eel.expose
 def get_musics(path):

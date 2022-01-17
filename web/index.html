@@ -60,10 +60,10 @@
 
         async function get_path(){
             let username = await eel.get_username()()
-            let musics = await eel.get_musics(`C:\\Users\\${username}\\Music`)()
+            let musics = await eel.get_musics(username[1])()
             sounds = musics
-            path = `C:\\Users\\${username}\\Music`
-            input.value = `C:\\Users\\${username}\\Music`
+            path = username[1]
+            input.value = username[1]
             musicName.innerHTML = musics[0]
         }
         async function prev_sound(){
