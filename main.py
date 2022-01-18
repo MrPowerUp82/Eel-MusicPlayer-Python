@@ -37,7 +37,7 @@ def next(path,sounds, atual):
     idx = sounds.index(atual)
     idx_next = idx +1
     n = len(sounds)-1
-    if idx_next >= n:
+    if idx_next > n:
         play_sound(path+'\\'+sounds[0])
         return sounds[0]    
     else:
