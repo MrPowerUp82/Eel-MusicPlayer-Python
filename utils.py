@@ -8,7 +8,6 @@ def get_art(sound,path_art):
     except:
         return 'img.jpg'
     with open(f'{path_art}temp_art.png', 'wb') as arq:
-        print(path_art)
         arq.write(art)
     return f'temp_art.png'
 

@@ -9,13 +9,12 @@ eel.init('web')
 
 @eel.expose
 def art(path,sound):
-    username =os.environ.get('USERNAME')
-    path_art = ''
+    path_user = os.path.expanduser('~')
     if 'main.py' in sys.argv[0]:
         path_art = 'web\\'
         return get_art(path+'\\'+sound,path_art)
     else:
-        path_art = f'C:\\Users\\{username}\\AppData\Local\\Temp\\pysound\\'
+        path_art = f'{path_user}\\AppData\Local\\Temp\\pysound\\'
         path_art = path_art + os.listdir(path_art)[0]+'\\web\\'
         return get_art(path+'\\'+sound,path_art)
 
@@ -70,9 +69,10 @@ def pause():
 @eel.expose
 def get_username():
     username = os.environ.get('USERNAME')
+    path_user = os.path.expanduser('~')
     system = sys.platform
     if system == 'win32':
-        return [username,f'C:\\Users\\{username}\\Music']
+        return [username,f'{path_user}\\Music']
     if (system == 'linux' or system == 'linux2') and username == 'root':
         return [username,f'/{username}/Music/']
     if system == 'linux' or system == 'linux2':
