@@ -1,15 +1,16 @@
 from pygame import mixer
 import audio_metadata
 
-def get_art(sound):
+def get_art(sound,path_art):
     metadata = audio_metadata.load(sound)
     try:
         art = metadata.pictures[0].data
     except:
         return 'img.jpg'
-    with open('web/temp_art.png', 'wb') as arq:
+    with open(f'{path_art}temp_art.png', 'wb') as arq:
+        print(path_art)
         arq.write(art)
-    return 'temp_art.png'
+    return f'temp_art.png'
 
 mixer.init()
 

@@ -9,7 +9,15 @@ eel.init('web')
 
 @eel.expose
 def art(path,sound):
-    return get_art(path+'\\'+sound)
+    username =os.environ.get('USERNAME')
+    path_art = ''
+    if 'main.py' in sys.argv[0]:
+        path_art = 'web\\'
+        return get_art(path+'\\'+sound,path_art)
+    else:
+        path_art = f'C:\\Users\\{username}\\AppData\Local\\Temp\\pysound\\'
+        path_art = path_art + os.listdir(path_art)[0]+'\\web\\'
+        return get_art(path+'\\'+sound,path_art)
 
 @eel.expose
 def stop_music():
