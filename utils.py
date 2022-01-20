@@ -27,12 +27,6 @@ def pause_sounds():
 def unpause_sounds():
     mixer.music.unpause()
     
-def is_sound_working():
-    if mixer.music.get_busy() == True:
-        return True
-    
-    return False
-
 def get_volume():
     return mixer.music.get_volume()
 
