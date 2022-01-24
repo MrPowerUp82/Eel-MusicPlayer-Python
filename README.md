@@ -16,3 +16,4 @@ python main.py
 ## Exemplo
 
 ![alt text](screenshot.png)
+![alt text](screenshot2.png)
