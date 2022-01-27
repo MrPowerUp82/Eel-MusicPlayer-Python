@@ -18,7 +18,32 @@ body{
     height:300px;
     width:300px;
 }
+input[type='range'] {
+    margin-bottom: 5px;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    input[type='range'] {
+      overflow: hidden;
+      width: 100%;
+      -webkit-appearance: none;
+      background-color: rgba(0,0,0, 0.7);
+    }
+    
+    input[type='range']::-webkit-slider-runnable-track {
+      height: 15px;
+      -webkit-appearance: none;
+      margin-top: -1px;
+      cursor: pointer;
+    }
+    
+    input[type='range']::-webkit-slider-thumb {
+      width: 10px;
+      -webkit-appearance: none;
+      cursor: ew-resize;
+      box-shadow: -80px 0 0 80px #fff;
+    }
 
+}
 
 .controls{
     flex: 1;
