@@ -1,8 +1,8 @@
-# PySound 1.7
+# PySound 1.8
 
 ## Instalação das Libs
 
-python -m pip install -r requirements
+python -m pip install -r requirements.txt
 
 ### `Crirar ".exe"`
 

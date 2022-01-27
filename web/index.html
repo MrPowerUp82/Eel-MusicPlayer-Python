@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PySound 1.7</title>
+    <title>PySound 1.8</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -23,9 +23,6 @@
         </div>
         <span id="volume"></span>
         <div class="controls">
-            <div onclick="upper_music()">
-                <button>+</button>
-            </div>
             <div onclick="prev_sound()">
                 <i class="feather-45" data-feather="arrow-left"></i>
             </div>
@@ -35,9 +32,9 @@
             <div onclick="next_sound()">
                 <i class="feather-45" data-feather="arrow-right"></i>
             </div>
-            <div onclick="lower_music()">
-                <button>-</button>
-            </div>
+        </div>
+        <div>
+            <input style="display:none;" class="slider" type="range" min="0" max="100" value="100" onchange="control_vol()" />
         </div>
         <div>
             <input id="path" type="text" value=""/>
@@ -53,6 +50,7 @@
         let playState = document.querySelector('.play')
         let volSpan = document.querySelector('#volume')
         let imageCover = document.querySelector('#cover')
+        let volSlider = document.querySelector('.slider')
         let isPlaying = false
         let firstPlay = false
         let volume
@@ -99,25 +97,8 @@
             isPlaying = false
             feather.replace()
         }
-        async function upper_music(){
-            volume = volume + 0.10
-            if(volume > 1.0){
-                volume = 1.0
-            }
-            if(volume < 0){
-                volume = 0
-            }
-            volSpan.innerHTML = String(Math.floor(volume*100))+"%"
-            await eel.volume_mixer(volume)()
-        }
-        async function lower_music(){
-            volume = volume - 0.10
-            if(volume > 1.0){
-                volume = 1.0
-            }
-            if(volume < 0){
-                volume = 0
-            }
+        async function control_vol(){
+            volume = parseInt(volSlider.value)/100
             volSpan.innerHTML = String(Math.floor(volume*100))+"%"
             await eel.volume_mixer(volume)()
         }
@@ -139,6 +120,7 @@
                 isPlaying = true
                 firstPlay = true
                 feather.replace()
+                volSlider.style.display = "block"
                 musicName.innerHTML = name
             }
             async function pause_music(){
@@ -166,9 +148,7 @@
         get_path()
     </script>
     <script>
-        $(document).ready(function (){
-            window.resizeTo(400, 650);
-        });
+        window.resizeTo(400,600)
     </script>
 </body>
 </html>
