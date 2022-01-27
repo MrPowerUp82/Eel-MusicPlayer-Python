@@ -90,4 +90,4 @@ def play(path,sounds):
     return sounds[0]
 
 
-eel.start('index.html', size=(400,600))
+eel.start('index.html', size=(400,605))
