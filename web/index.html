@@ -22,6 +22,9 @@
             <h1 id="musicName">Music</h1>
         </div>
         <span id="volume"></span>
+        <div>
+            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="set_pos()"/><span class="time_end">02:12</span>
+        </div>
         <div class="controls">
             <div onclick="prev_sound()">
                 <i class="feather-45" data-feather="arrow-left"></i>
@@ -51,8 +54,12 @@
         let volSpan = document.querySelector('#volume')
         let imageCover = document.querySelector('#cover')
         let volSlider = document.querySelector('.slider')
+        let time_end = document.querySelector('.time_end')
+        let timeSlider = document.querySelector('.slider2')
+        let time_start = document.querySelector('.time_start')
         let isPlaying = false
         let firstPlay = false
+        let interrupt = false
         let volume
         let path
         let sounds
@@ -102,6 +109,31 @@
             volSpan.innerHTML = String(Math.floor(volume*100))+"%"
             await eel.volume_mixer(volume)()
         }
+
+        async function set_pos(){
+            interrupt=true
+            await Promise.all([
+            eel.def_pos(parseInt(timeSlider.value))(),
+            interrupt = false
+            ])
+            
+        }
+
+        async function get_pos(){
+            while (!interrupt){
+                let time = await eel.music_pos()()
+                timeSlider.value=time[0]
+                time_start.innerHTML = time[1]
+            }
+           
+
+        }
+        async function get_end(path,music){
+            let time = await eel.end_music(path,music)()
+            timeSlider.max=parseInt(time[0])
+            time_end.innerHTML = time[1]
+
+        }
         async function play_music(){
 
             async function play_sound(){
@@ -111,6 +143,7 @@
                 path = path_addr
                 let name = await eel.play(path,sounds)()
                 let vol = await eel.volume_info()()
+                get_pos()
                 console.log(vol)
                 volSpan.innerHTML= String(Math.floor(vol*100))+"%"
                 volume = vol
@@ -122,6 +155,7 @@
                 feather.replace()
                 volSlider.style.display = "block"
                 musicName.innerHTML = name
+                get_end(path,name)
             }
             async function pause_music(){
                 await eel.pause()()

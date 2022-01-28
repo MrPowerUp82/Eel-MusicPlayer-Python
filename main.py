@@ -2,7 +2,7 @@ from distutils.log import error
 import eel
 import os
 import sys
-from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume, get_art
+from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume, get_art, get_pos, get_end, set_pos
 
 eel.init('web')
 
@@ -18,10 +18,24 @@ def art(path,sound):
         path_art = path_art + os.listdir(path_art)[0]+'\\web\\'
         return get_art(path+'\\'+sound,path_art)
 
+
+
+@eel.expose
+def def_pos(value):
+    return set_pos(value)
+
+@eel.expose
+def music_pos():
+   return get_pos() 
+
 @eel.expose
 def stop_music():
     stop_sounds()
 
+@eel.expose
+def end_music(path,sounds):
+    file = path+'\\'+sounds
+    return get_end(file)
 
 @eel.expose
 def volume_info():

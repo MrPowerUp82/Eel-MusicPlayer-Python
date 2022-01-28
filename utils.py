@@ -1,5 +1,8 @@
 from pygame import mixer
 import audio_metadata
+from time import strftime
+from time import gmtime
+
 
 def get_art(sound,path_art):
     metadata = audio_metadata.load(sound)
@@ -31,4 +34,18 @@ def get_volume():
     return mixer.music.get_volume()
 
 def set_volume(vol):
-    mixer.music.set_volume(vol)
+    return mixer.music.set_volume(vol)
+    
+def get_pos():
+    time_int = mixer.music.get_pos()/1000
+    time = strftime("%M:%S", gmtime(int(time_int)))
+    return [time_int,time]
+    
+def get_end(file):
+    meta = audio_metadata.load(file)['streaminfo']['duration']
+    time =  strftime("%M:%S", gmtime(int(meta)))
+    return [meta,time]
+    
+def set_pos(value):
+    mixer.music.set_pos(value)
+    return False
