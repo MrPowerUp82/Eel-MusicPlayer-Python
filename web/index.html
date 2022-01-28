@@ -22,8 +22,8 @@
             <h1 id="musicName">Music</h1>
         </div>
         <span id="volume"></span>
-        <div>
-            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="set_pos()"/><span class="time_end">02:12</span>
+        <div class="time_container" style="display:none">
+            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" disabled/><span class="time_end">00:00</span>
         </div>
         <div class="controls">
             <div onclick="prev_sound()">
@@ -57,9 +57,10 @@
         let time_end = document.querySelector('.time_end')
         let timeSlider = document.querySelector('.slider2')
         let time_start = document.querySelector('.time_start')
+        let time_container = document.querySelector('.time_container')
         let isPlaying = false
         let firstPlay = false
-        let interrupt = false
+        let interval
         let volume
         let path
         let sounds
@@ -110,24 +111,13 @@
             await eel.volume_mixer(volume)()
         }
 
-        async function set_pos(){
-            interrupt=true
-            await Promise.all([
-            eel.def_pos(parseInt(timeSlider.value))(),
-            interrupt = false
-            ])
-            
-        }
 
         async function get_pos(){
-            while (!interrupt){
                 let time = await eel.music_pos()()
                 timeSlider.value=time[0]
                 time_start.innerHTML = time[1]
             }
-           
 
-        }
         async function get_end(path,music){
             let time = await eel.end_music(path,music)()
             timeSlider.max=parseInt(time[0])
@@ -143,7 +133,10 @@
                 path = path_addr
                 let name = await eel.play(path,sounds)()
                 let vol = await eel.volume_info()()
-                get_pos()
+                time_container.style.display='block'
+                interval = setInterval(() => {
+                    get_pos()
+                }, 950);
                 console.log(vol)
                 volSpan.innerHTML= String(Math.floor(vol*100))+"%"
                 volume = vol
@@ -182,7 +175,7 @@
         get_path()
     </script>
     <script>
-        window.resizeTo(400,605)
+        window.resizeTo(400,625)
     </script>
 </body>
 </html>

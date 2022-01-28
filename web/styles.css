@@ -18,32 +18,33 @@ body{
     height:300px;
     width:300px;
 }
+
 .slider {
     margin-bottom: 5px;
 }
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    .slider {
-      overflow: hidden;
-      width: 100%;
-      -webkit-appearance: none;
-      background-color: rgba(0,0,0, 0.7);
-    }
-    
-    .slider::-webkit-slider-runnable-track {
-      height: 15px;
-      -webkit-appearance: none;
-      margin-top: -1px;
-      cursor: pointer;
-    }
-    
-    .slider::-webkit-slider-thumb {
-      width: 10px;
-      -webkit-appearance: none;
-      cursor: ew-resize;
-      box-shadow: -80px 0 0 80px #fff;
-    }
 
+.slider {
+    overflow: hidden;
+    width: 100%;
+    -webkit-appearance: none;
+    background-color: rgba(0,0,0, 0.7);
 }
+
+.slider::-webkit-slider-runnable-track {
+    height: 15px;
+    -webkit-appearance: none;
+    margin-top: -1px;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    width: 10px;
+    -webkit-appearance: none;
+    cursor: ew-resize;
+    box-shadow: -80px 0 0 80px #fff;
+}
+
+
 
 .controls{
     flex: 1;
