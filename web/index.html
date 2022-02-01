@@ -82,7 +82,20 @@
             imageCover.src = cover_path
             feather.replace()
             musicName.innerHTML = name
+            get_end(path,name)
         }
+
+        eel.expose(auto_next)
+        function auto_next(name,path,cover_path){
+            playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
+            isPlaying = true
+            firstPlay = true
+            imageCover.src = cover_path
+            feather.replace()
+            musicName.innerHTML = name
+            get_end(path,name)
+        }
+
         async function next_sound(){
             let name = await eel.next(path,sounds,musicName.innerHTML)()
             playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
@@ -92,6 +105,7 @@
             imageCover.src = cover_path
             feather.replace()
             musicName.innerHTML = name
+            get_end(path,name)
         }
         async function update_musics(){
             path_addr = input.value

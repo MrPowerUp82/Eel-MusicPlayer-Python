@@ -49,3 +49,9 @@ def get_end(file):
 def set_pos(value):
     mixer.music.set_pos(value)
     return False
+
+def is_working():
+    n = mixer.music.get_busy()
+    if n >= 1:
+        return True
+    return False
