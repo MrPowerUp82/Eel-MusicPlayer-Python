@@ -1,10 +1,49 @@
-from distutils.log import error
 import eel
 import os
 import sys
-from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume, get_art, get_pos, get_end, set_pos
+from utils import play_sound, pause_sounds, unpause_sounds, stop_sounds, set_volume, get_volume, get_art, get_pos, get_end, set_pos, is_working
+import time
+import threading
 
 eel.init('web')
+
+interrupt = False
+idx = 0
+music_list = []
+path = ''
+
+
+def auto_next():
+    global interrupt
+    global idx
+    global music_list
+    global path
+
+    working = is_working()
+    while working:
+        if eel._shutdown != None:
+            exit()
+        if interrupt:
+            while interrupt:
+                time.sleep(1)
+        working = is_working()
+        time.sleep(2.5)
+       
+
+    stop_sounds()
+    idx_next = idx +1
+    n = len(music_list)-1
+    if idx_next > n:
+        play_sound(path+'\\'+music_list[0])
+        cover = art(path,music_list[0])
+        eel.auto_next(music_list[0],path,cover)
+        threading.Thread(target=auto_next).start()  
+    else:
+        play_sound(path+'\\'+music_list[idx_next])
+        cover = art(path,music_list[idx_next])
+        eel.auto_next(music_list[idx_next],path,cover)
+        threading.Thread(target=auto_next).start()
+    
 
 
 @eel.expose
@@ -30,6 +69,9 @@ def music_pos():
 
 @eel.expose
 def stop_music():
+    global interrupt
+    
+    interrupt = True
     stop_sounds()
 
 @eel.expose
@@ -47,45 +89,68 @@ def volume_mixer(vol):
 
 @eel.expose
 def next(path,sounds, atual):
+    global idx
+    global interrupt
+    
+    interrupt = True
     stop_sounds()
     idx = sounds.index(atual)
     idx_next = idx +1
+    idx = idx_next
     n = len(sounds)-1
     if idx_next > n:
         play_sound(path+'\\'+sounds[0])
+        interrupt = False
         return sounds[0]    
     else:
         play_sound(path+'\\'+sounds[idx_next])
+        interrupt = False
         return sounds[idx_next]
 
 @eel.expose
 def prev(path,sounds, atual):
+    global idx
+    global interrupt
+    
+    interrupt = True
     stop_sounds()
     idx = sounds.index(atual)
     idx_prev = idx -1
+    idx= idx_prev
     n = len(sounds)-1
     if idx_prev <= -1:
         play_sound(path+'\\'+sounds[-1])
+        interrupt = False
         return sounds[-1]    
     else:
         play_sound(path+'\\'+sounds[idx_prev])
+        interrupt = False
         return sounds[idx_prev]
 
                         
 @eel.expose
 def unpause():
+    global interrupt
+    
+    interrupt = False
     return unpause_sounds()
 
 @eel.expose
 def pause():
+    global interrupt
+    
+    interrupt = True
     return pause_sounds()
 
 @eel.expose
 def get_username():
+    global path
+    
     username = os.environ.get('USERNAME')
     path_user = os.path.expanduser('~')
     system = sys.platform
     if system == 'win32':
+        path = f'{path_user}\\Music'
         return [username,f'{path_user}\\Music']
     if (system == 'linux' or system == 'linux2') and username == 'root':
         return [username,f'/{username}/Music/']
@@ -96,12 +161,18 @@ def get_username():
 
 @eel.expose
 def get_musics(path):
-    return [x for x in os.listdir(path) if '.mp3' in x or '.wav' in x or 'ogg' in x or 'wma' in x or 'aac' in x]
+    global music_list
+    
+    music_list =[x for x in os.listdir(path) if '.mp3' in x or '.wav' in x or 'ogg' in x or 'wma' in x or 'aac' in x]
+    return music_list
 
 @eel.expose
 def play(path,sounds):
-    play_sound(path+'\\'+sounds[0])
-    return sounds[0]
+    global idx
+    
+    play_sound(path+'\\'+sounds[idx])
+    threading.Thread(target=auto_next).start()
+    return sounds[idx]
 
 
 eel.start('index.html', size=(400,625))
