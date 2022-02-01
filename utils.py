@@ -1,3 +1,4 @@
+import threading
 from pygame import mixer
 import audio_metadata
 from time import strftime
@@ -49,3 +50,11 @@ def get_end(file):
 def set_pos(value):
     mixer.music.set_pos(value)
     return False
+
+
+def get_time(x):
+    time =  strftime("%M:%S", gmtime(int(x)))
+    return [x,time]
+
+def is_working():
+    return mixer.music.get_busy()
