@@ -23,7 +23,7 @@
         </div>
         <span id="volume"></span>
         <div class="time_container" style="display:none">
-            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" disabled/><span class="time_end">00:00</span>
+            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="set_pos()" disabled/><span class="time_end">00:00</span>
         </div>
         <div class="controls">
             <div onclick="prev_sound()">
@@ -82,6 +82,7 @@
             imageCover.src = cover_path
             feather.replace()
             musicName.innerHTML = name
+            get_end(path,name)
         }
         async function next_sound(){
             let name = await eel.next(path,sounds,musicName.innerHTML)()
@@ -92,6 +93,7 @@
             imageCover.src = cover_path
             feather.replace()
             musicName.innerHTML = name
+            get_end(path,name)
         }
         async function update_musics(){
             path_addr = input.value
@@ -111,6 +113,19 @@
             await eel.volume_mixer(volume)()
         }
 
+        async function set_pos(){
+            let pos = parseFloat(timeSlider.value)
+            eel.def_pos(pos)()
+        }
+
+        eel.expose(general_pos)
+        function general_pos(x){
+            console.log(x)
+            if(x[2] == 'pos'){
+                timeSlider.value=x[0]
+                time_start.innerHTML = x[1]
+            }
+        }
 
         async function get_pos(){
                 let time = await eel.music_pos()()
@@ -134,9 +149,9 @@
                 let name = await eel.play(path,sounds)()
                 let vol = await eel.volume_info()()
                 time_container.style.display='block'
-                interval = setInterval(() => {
+                /* interval = setInterval(() => {
                     get_pos()
-                }, 950);
+                }, 950); */
                 console.log(vol)
                 volSpan.innerHTML= String(Math.floor(vol*100))+"%"
                 volume = vol
