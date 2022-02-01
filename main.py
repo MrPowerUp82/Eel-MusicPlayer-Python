@@ -13,6 +13,16 @@ music_list = []
 path = ''
 
 
+def pos_():
+    while True:
+        if eel._shutdown != None:
+            exit()
+        send = get_pos()
+        send.append('pos')
+        eel.general_pos(send)
+        time.sleep(0.99)
+
+
 def auto_next():
     global interrupt
     global idx
@@ -70,7 +80,6 @@ def music_pos():
 @eel.expose
 def stop_music():
     global interrupt
-    
     interrupt = True
     stop_sounds()
 
@@ -138,7 +147,6 @@ def unpause():
 @eel.expose
 def pause():
     global interrupt
-    
     interrupt = True
     return pause_sounds()
 
@@ -172,6 +180,7 @@ def play(path,sounds):
     
     play_sound(path+'\\'+sounds[idx])
     threading.Thread(target=auto_next).start()
+    threading.Thread(target=pos_).start()
     return sounds[idx]
 
 
