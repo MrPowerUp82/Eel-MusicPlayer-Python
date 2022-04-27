@@ -1,1 +1,5 @@
-__pycache__
+__pycache__/
+dist/
+build/
+*.spec
+web/temp.mp3

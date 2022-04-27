@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
     <title>PySound 1.8</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -23,7 +26,7 @@
         </div>
         <span id="volume"></span>
         <div class="time_container" style="display:none">
-            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="set_pos()" disabled/><span class="time_end">00:00</span>
+            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="controlPos(this.value)"/><span class="time_end">00:00</span>
         </div>
         <div class="controls">
             <div onclick="prev_sound()">
@@ -32,174 +35,165 @@
             <div class="play" onclick="play_music()">
                 <i class="feather-45" data-feather="play" color="black"></i>
             </div>
+            <div class="play" id="pause" onclick="pause_music()" style="display:none">
+                <i class="feather-45" data-feather="pause" color="black"></i>
+            </div>
             <div onclick="next_sound()">
                 <i class="feather-45" data-feather="arrow-right"></i>
             </div>
         </div>
         <div>
-            <input style="display:none;" class="slider" type="range" min="0" max="100" value="100" onchange="control_vol()" />
+            <input style="display:none;" class="slider" type="range" min="0" max="100" value="100" onchange="controlVol(this.value)" />
         </div>
         <div>
             <input id="path" type="text" value=""/>
             <button onclick="update_musics()">Update</button>
         </div>
+        <audio id="audioplayer" controls="all" style="position:absolute; top:0; left:0; display:none;">
     </div>
     <script>
         feather.replace()
     </script>
     <script>
-        let input = document.querySelector('#path')
-        let musicName = document.querySelector('#musicName')
-        let playState = document.querySelector('.play')
-        let volSpan = document.querySelector('#volume')
-        let imageCover = document.querySelector('#cover')
-        let volSlider = document.querySelector('.slider')
-        let time_end = document.querySelector('.time_end')
-        let timeSlider = document.querySelector('.slider2')
-        let time_start = document.querySelector('.time_start')
-        let time_container = document.querySelector('.time_container')
-        let isPlaying = false
-        let firstPlay = false
-        let interval
-        let volume
         let path
-        let sounds
+        let musics
+        let pathInput = document.getElementById('path')
+        let musicName = document.querySelector('#musicName')
+        let idx = 0
+        let length_list
+        let audioplayer = document.querySelector('#audioplayer')
+        let playState = document.querySelector('.play')
+        let pauseState = document.querySelector('#pause')
+        let cover = document.querySelector('#cover')
+        let timer
+        let slider2 = document.querySelector('.slider')
+        let slider = document.querySelector('.slider2')
+        let time_container = document.querySelector('.time_container')
+        let time_end = document.querySelector('.time_end')
+        let time_start = document.querySelector('.time_start')
+        let paused = false
+        let threading
+        let volume = document.querySelector('#volume')
+        
 
-        async function get_path(){
-            let username = await eel.get_username()()
-            let musics = await eel.get_musics(username[1])()
-            sounds = musics
-            path = username[1]
-            input.value = username[1]
-            musicName.innerHTML = musics[0]
-        }
-        async function prev_sound(){
-            let name = await eel.prev(path,sounds,musicName.innerHTML)()
-            playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
-            isPlaying = true
-            firstPlay = true
-            let cover_path = await eel.art(path,name)()
-            imageCover.src = cover_path
-            feather.replace()
-            musicName.innerHTML = name
-            get_end(path,name)
-        }
-
-        eel.expose(auto_next)
-        function auto_next(name,path,cover_path){
-            playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
-            isPlaying = true
-            firstPlay = true
-            imageCover.src = cover_path
-            feather.replace()
-            musicName.innerHTML = name
-            get_end(path,name)
-        }
-
-        async function next_sound(){
-            let name = await eel.next(path,sounds,musicName.innerHTML)()
-            playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
-            isPlaying = true
-            firstPlay = true
-            let cover_path = await eel.art(path,name)()
-            imageCover.src = cover_path
-            feather.replace()
-            musicName.innerHTML = name
-            get_end(path,name)
-        }
-        async function update_musics(){
-            path_addr = input.value
-            let musics = await eel.get_musics(path_addr)()
-            musicName.innerHTML = musics[0]
-            sounds = musics
-            path = path_addr
-            playState.innerHTML = '<i class="feather-45" data-feather="play" color="black"></i>'
-            await eel.stop_music()()
-            firstPlay = false
-            isPlaying = false
-            feather.replace()
-        }
-        async function control_vol(){
-            volume = parseInt(volSlider.value)/100
-            volSpan.innerHTML = String(Math.floor(volume*100))+"%"
-            await eel.volume_mixer(volume)()
-        }
-
-        async function set_pos(){
-            let pos = parseFloat(timeSlider.value)
-            eel.def_pos(pos)()
-        }
-
-        eel.expose(general_pos)
-        function general_pos(x){
-            console.log(x)
-            if(x[2] == 'pos'){
-                timeSlider.value=x[0]
-                time_start.innerHTML = x[1]
+        async function update_musics() {
+            path = pathInput.value
+            musics = await eel.get_musics(path)()
+            if (musics.length > 0) {
+            idx=0
+            length_list = musics.length
+            musicName.innerHTML = musics[idx]
             }
         }
 
-        async function get_pos(){
-                let time = await eel.music_pos()()
-                timeSlider.value=time[0]
-                time_start.innerHTML = time[1]
-            }
-
-        async function get_end(path,music){
-            let time = await eel.end_music(path,music)()
-            timeSlider.max=parseInt(time[0])
-            time_end.innerHTML = time[1]
-
+        function threadingStart(){
+            threading = setInterval(()=>{
+                if (!paused && !audioplayer.playing && audioplayer.currentTime == audioplayer.duration){
+                    idx = idx + 1
+                    if (idx >= length_list){
+                        idx = 0
+                        paused = false
+                    }
+                    play_music()
+                }
+            },2000)
         }
+
+        function threadingStop(){
+            clearInterval(threading)
+        }
+
+        async function getMusics() {
+            path = await eel.start()()
+            pathInput.value = path
+            musics = await eel.get_musics(path)()
+            if (musics.length > 0) {
+            length_list = musics.length
+            musicName.innerHTML = musics[idx]
+            }
+        }
+        getMusics()
+
+        function controlVol(value) {
+            audioplayer.volume = value/100
+            volume.innerHTML = value+'%'
+        }
+
+        function controlPos(value){
+            clearInterval(timer)
+            audioplayer.currentTime =value
+            slider.value = value
+            setTimeout(()=>{
+                timer = setInterval(async()=>{
+                    slider.max = audioplayer.duration
+                    time_end.innerHTML = await eel.time_f(audioplayer.duration)()
+                    slider.value = audioplayer.currentTime
+                    time_start.innerHTML = await eel.time_f(audioplayer.currentTime)()
+                }, 999)
+            }, 999)
+        }
+
+        function pause_music(){
+            clearInterval(timer)
+            audioplayer.pause()
+            playState.style.display = 'inline'
+            pauseState.style.display = 'none'
+            paused = true
+        }
+
         async function play_music(){
-
-            async function play_sound(){
-                path_addr = input.value
-                let musics = await eel.get_musics(path_addr)()
-                sounds = musics
-                path = path_addr
-                let name = await eel.play(path,sounds)()
-                let vol = await eel.volume_info()()
-                time_container.style.display='block'
-                /* interval = setInterval(() => {
-                    get_pos()
-                }, 950); */
-                console.log(vol)
-                volSpan.innerHTML= String(Math.floor(vol*100))+"%"
-                volume = vol
-                let cover_path = await eel.art(path,name)()
-                imageCover.src = cover_path
-                playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
-                isPlaying = true
-                firstPlay = true
-                feather.replace()
-                volSlider.style.display = "block"
-                musicName.innerHTML = name
-                get_end(path,name)
+            if (paused) {
+                audioplayer.play()
+                playState.style.display = 'none'
+                pauseState.style.display = 'inline'
+                timer = setInterval(async()=>{
+                    slider.max = audioplayer.duration
+                    time_end.innerHTML = await eel.time_f(audioplayer.duration)()
+                    slider.value = audioplayer.currentTime
+                    time_start.innerHTML = await eel.time_f(audioplayer.currentTime)()
+                }, 999)     
+            }else{
+            let info = await eel.create_file(path+musics[idx])()
+            let date_now = Date.now().toString()
+            audioplayer.innerHTML = `
+            <source src="${info[0]}?${date_now}" type="audio/${info[1]}" />
+            `
+            audioplayer.load()
+            audioplayer.play()
+            cover.src = info[2]
+            musicName.innerHTML = musics[idx]
+            slider2.style.display = 'block'
+            time_container.style.display = 'block'
+            playState.style.display = 'none'
+            pauseState.style.display = 'inline'
+            volume.innerHTML = 100+'%'
+            timer = setInterval(async()=>{
+                    slider.max = audioplayer.duration
+                    time_end.innerHTML = await eel.time_f(audioplayer.duration)()
+                    slider.value = audioplayer.currentTime
+                    time_start.innerHTML = await eel.time_f(audioplayer.currentTime)()
+                }, 999)           
             }
-            async function pause_music(){
-                await eel.pause()()
-                playState.innerHTML = '<i class="feather-45" data-feather="play" color="black"></i>'
-                isPlaying = false
-                feather.replace()
-            }
-            async function unpause_music(){
-                await eel.unpause()()
-                playState.innerHTML = '<i class="feather-45" data-feather="pause" color="black"></i>'
-                isPlaying = true
-                feather.replace()
-            }
-            if(firstPlay && !isPlaying ){
-                unpause_music()
-            }
-            if(isPlaying){
-                pause_music()
-            }
-            if (!isPlaying && !firstPlay){
-                play_sound()
-            }
+            threadingStart()
         }
-        get_path()
+
+        async function prev_sound() {
+            idx = idx - 1
+            if(idx <= -1){
+                idx = length_list -1
+            }
+            paused = false
+            play_music()
+        }
+
+        async function next_sound() {
+            idx = idx + 1
+            if (idx >= length_list){
+                idx = 0
+            }
+            paused = false
+            play_music()
+        }
     </script>
     <script>
         window.resizeTo(400,625)
