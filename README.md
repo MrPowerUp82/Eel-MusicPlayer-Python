@@ -2,16 +2,22 @@
 
 ## Instalação das Libs
 
+  ```console
 python -m pip install -r requirements.txt
+  ```
 
 ### `Crirar ".exe"`
-
-1. python -m pip install pyinstaller
-2. python -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir %temp%/pysound
-
+  ```console
+python -m pip install pyinstaller
+  ```
+```console
+python -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir %temp%/pysound
+  ```
 ### `Executar`
 
+  ```console
 python main.py
+  ```
 
 ## Exemplo
 
