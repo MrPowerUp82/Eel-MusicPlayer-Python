@@ -3,3 +3,4 @@ dist/
 build/
 *.spec
 web/temp.mp3
+web/temp_art.png
