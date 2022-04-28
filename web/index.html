@@ -24,7 +24,7 @@
         <div class="musicName">
             <h1 id="musicName">Music</h1>
         </div>
-        <span id="volume"></span>
+        <span id="volume" style="display:none">100%</span>
         <div class="time_container" style="display:none">
             <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="controlPos(this.value)"/><span class="time_end">00:00</span>
         </div>
@@ -78,6 +78,9 @@
 
         async function update_musics() {
             path = pathInput.value
+            if (path[-1] !== '/' | path[-1]!== '\\') {
+                path = path + '/'
+            }
             musics = await eel.get_musics(path)()
             if (musics.length > 0) {
             idx=0
@@ -166,7 +169,7 @@
             time_container.style.display = 'block'
             playState.style.display = 'none'
             pauseState.style.display = 'inline'
-            volume.innerHTML = 100+'%'
+            volume.style.display = 'block'
             timer = setInterval(async()=>{
                     slider.max = audioplayer.duration
                     time_end.innerHTML = await eel.time_f(audioplayer.duration)()
