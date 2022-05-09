@@ -102,8 +102,9 @@
 
         function threadingStart(){
             threading = setInterval(()=>{
-                if (!paused && !audioplayer.playing && audioplayer.currentTime == audioplayer.duration){
+                if (!audioplayer.playing && audioplayer.currentTime == audioplayer.duration){
                     idx = idx + 1
+                    paused = false
                     if (idx >= length_list){
                         idx = 0
                         paused = false
