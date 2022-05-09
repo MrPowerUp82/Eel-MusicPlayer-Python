@@ -2,8 +2,20 @@ import eel
 import os
 import sys
 from utils import get_art, get_time
+import tkinter 
+import tkinter.filedialog as filedialog
 
 eel.init('web')
+
+
+@eel.expose
+def select_path():
+    root = tkinter.Tk()
+    root.attributes("-topmost", True)
+    root.withdraw()
+    directory_path = filedialog.askdirectory()
+    return directory_path+'/'
+
 
 @eel.expose
 def time_f(time):

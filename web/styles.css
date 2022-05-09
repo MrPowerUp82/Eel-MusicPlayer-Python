@@ -3,6 +3,11 @@ body{
     margin:0;
     color: #fff;
     height: 100vh;
+    overflow: hidden;
+}
+
+html{
+    overflow: hidden;
 }
 
 .container{
@@ -71,7 +76,9 @@ body{
 
 .musicName{
     font-weight: bold;
-    font-size: 14px;
+    font-size: 24px;
+    max-width: 350px;
+    word-break: break-all;
 }
 
 .play{
