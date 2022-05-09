@@ -46,9 +46,12 @@
             <input style="display:none;" class="slider" type="range" min="0" max="100" value="100" onchange="controlVol(this.value)" />
         </div>
         <div>
-            <input id="path" type="text" value=""/>
+            <input id="path" readonly type="text" value=""/>
             <button onclick="update_musics()">Update</button>
         </div>
+        <center>
+            <h3 id="message" style="color:red;display: none;"></h3>
+        </center>
         <audio id="audioplayer" controls="all" style="position:absolute; top:0; left:0; display:none;">
     </div>
     <script>
@@ -74,18 +77,26 @@
         let paused = false
         let threading
         let volume = document.querySelector('#volume')
+        let message = document.querySelector('#message')
         
 
         async function update_musics() {
-            path = pathInput.value
-            if (path[-1] !== '/' | path[-1]!== '\\') {
-                path = path + '/'
-            }
+            path = await eel.select_path()()
+            pathInput.value = path
+            // path = pathInput.value
+            // if (path[-1] !== '/' | path[-1]!== '\\') {
+            //     path = path + '/'
+            // }
             musics = await eel.get_musics(path)()
             if (musics.length > 0) {
             idx=0
             length_list = musics.length
             musicName.innerHTML = musics[idx]
+            message.style.display = 'none'
+            }else{
+                message.style.display = 'block'
+                message.innerHTML = 'Nenhuma música foi encontrada!'
+                musicName.className="musicName"
             }
         }
 
@@ -113,6 +124,10 @@
             if (musics.length > 0) {
             length_list = musics.length
             musicName.innerHTML = musics[idx]
+            }else{
+                message.style.display = 'block'
+                message.innerHTML = 'Nenhuma música foi encontrada!'
+                musicName.className="musicName"
             }
         }
         getMusics()
