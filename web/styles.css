@@ -77,8 +77,6 @@ html{
 .musicName{
     font-weight: bold;
     font-size: 11px;
-    max-width: 350px;
-    max-width: 1000px;
     width: auto;
     white-space: nowrap;
     overflow-x: hidden;
@@ -87,13 +85,22 @@ html{
 
 #musicName{
     width: 100%;
-    transform: translateX(100%);
-    animation: textAnime 12s infinite;
+    transform: translateX(101%);
+    animation: textAnime 12s infinite ease-in-out alternate;
 }
 
 @keyframes textAnime {
-    to{
-        transform: translateX(-100%);
+    0%{
+        transform: translateX(101%);
+    }
+    75%{
+        transform: translateX(-101%);
+    }
+    90%{
+        transform: translateX(0);
+    }
+    100%{
+        transform: translateX(0);
     }
 }
 
