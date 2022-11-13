@@ -76,9 +76,25 @@ html{
 
 .musicName{
     font-weight: bold;
-    font-size: 24px;
+    font-size: 11px;
     max-width: 350px;
-    word-break: break-all;
+    max-width: 1000px;
+    width: auto;
+    white-space: nowrap;
+    overflow-x: hidden;
+    min-height: 15px;
+}
+
+#musicName{
+    width: 100%;
+    transform: translateX(100%);
+    animation: textAnime 12s infinite;
+}
+
+@keyframes textAnime {
+    to{
+        transform: translateX(-100%);
+    }
 }
 
 .play{

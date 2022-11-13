@@ -1,11 +1,14 @@
 import eel
 import os
 import sys
-from utils import get_art, get_time
+from utils import get_art, get_time, search_for_musics
 import tkinter 
 import tkinter.filedialog as filedialog
 
 eel.init('web')
+
+ext_musics = [
+    'mp3', 'wav','ogg','wma','aac']
 
 
 @eel.expose
@@ -23,14 +26,14 @@ def time_f(time):
 
 @eel.expose
 def start():
-    user_path = os.path.expanduser('~')
-    path_music = [x for x in os.listdir(user_path) if 'Musi' in x or 'Músi' in x][0]
-    return user_path+'/'+(path_music if path_music else 'Music')+'/'
+    return search_for_musics()
+    # user_path = os.path.expanduser('~')
+    # path_music = [x for x in os.listdir(user_path) if 'Musi' in x or 'Músi' in x][0]
+    # return user_path+'/'+(path_music if path_music else 'Music')+'/'
 
 @eel.expose
 def get_musics(path):
-    
-    music_list =[x for x in os.listdir(path) if '.mp3' in x or '.wav' in x or 'ogg' in x or 'wma' in x or 'aac' in x]
+    music_list =[x for x in os.listdir(path) if x.split('.')[-1].lower() in ext_musics]
     return music_list
 
 @eel.expose
