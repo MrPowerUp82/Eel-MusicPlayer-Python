@@ -20,6 +20,8 @@ def search_for_musics()->str:
             elif len([x for x in files if x.endswith('.mp3')]):
                 return root + '/'
 
+    return user_path
+
 
 def get_art(sound,path_art):
     try:
