@@ -4,7 +4,6 @@ import sys
 from utils import get_art, get_time, search_for_musics
 import tkinter 
 import tkinter.filedialog as filedialog
-import tempfile
 
 # if not sys.platform == 'win32':
 #     actual_path = os.getcwd()
@@ -15,7 +14,6 @@ import tempfile
     
 #     os.chdir(actual_path)
 
-temp_dir = tempfile.mkdtemp()
 
 
 eel.init('web')
