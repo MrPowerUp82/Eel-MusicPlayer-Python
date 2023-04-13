@@ -5,6 +5,16 @@ from utils import get_art, get_time, search_for_musics
 import tkinter 
 import tkinter.filedialog as filedialog
 
+# if not sys.platform == 'win32':
+#     actual_path = os.getcwd()
+#     path = os.path.join('/tmp/')
+#     os.chdir(path)
+#     if not os.path.exists('pysound'):
+#         os.mkdir('pysound')
+    
+#     os.chdir(actual_path)
+
+
 eel.init('web')
 
 ext_musics = [
@@ -45,6 +55,8 @@ def create_file(music):
         if sys.platform == 'win32':
             path = os.path.expanduser('~')+'/AppData/Local/Temp/pysound/'
         else:
+            if not os.path.exists('/tmp/pysound'):
+                os.mkdir('/tmp/pysound')
             path = '/tmp/pysound/'
         path =path+ os.listdir(path)[0]+'/web/'
     with open(f'{path}temp.{ext}', 'wb') as arq:

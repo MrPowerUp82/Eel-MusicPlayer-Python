@@ -13,6 +13,9 @@ python -m pip install pyinstaller
 ```console
 python -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir %temp%/pysound
   ```
+```console
+python3 -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir /tmp/pysound && mkdir /tmp/pysound
+  ```
 ### `Executar`
 
   ```console
