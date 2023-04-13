@@ -11,10 +11,10 @@ python -m pip install -r requirements.txt
 python -m pip install pyinstaller
   ```
 ```console
-python -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir %temp%/pysound
+python -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir %temp%
   ```
 ```console
-python3 -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir /tmp/pysound && mkdir /tmp/pysound
+python3 -m eel main.py web --noconsole --onefile -i web/favicon.ico --runtime-tmpdir /tmp
   ```
 ### `Executar`
 

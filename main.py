@@ -4,6 +4,7 @@ import sys
 from utils import get_art, get_time, search_for_musics
 import tkinter 
 import tkinter.filedialog as filedialog
+import tempfile
 
 # if not sys.platform == 'win32':
 #     actual_path = os.getcwd()
@@ -13,6 +14,8 @@ import tkinter.filedialog as filedialog
 #         os.mkdir('pysound')
     
 #     os.chdir(actual_path)
+
+temp_dir = tempfile.mkdtemp()
 
 
 eel.init('web')
@@ -52,13 +55,15 @@ def create_file(music):
     if 'main.py' in sys.argv[0]:
         path = os.getcwd()+'/web/'
     else:
-        if sys.platform == 'win32':
-            path = os.path.expanduser('~')+'/AppData/Local/Temp/pysound/'
-        else:
-            if not os.path.exists('/tmp/pysound'):
-                os.mkdir('/tmp/pysound')
-            path = '/tmp/pysound/'
-        path =path+ os.listdir(path)[0]+'/web/'
+        # if sys.platform == 'win32':
+        #     # path = os.path.expanduser('~')+'/AppData/Local/Temp/pysound/'
+        #     path = os.path.join(temp_dir, 'pysound') + '/'
+        # else:
+        #     # if not os.path.exists('/tmp/pysound'):
+        #     #     os.mkdir('/tmp/pysound')
+        #     # path = '/tmp/pysound/'
+        #     path = os.path.join(temp_dir, 'pysound') + '/'
+        path =eel.root_path + '/'
     with open(f'{path}temp.{ext}', 'wb') as arq:
         music_arq = open(music, 'rb').read()
         arq.write(music_arq)
