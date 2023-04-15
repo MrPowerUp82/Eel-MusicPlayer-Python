@@ -81,6 +81,7 @@
         
 
         async function update_musics() {
+            await pause_music()
             path = await eel.select_path()()
             pathInput.value = path
             // path = pathInput.value
@@ -93,6 +94,8 @@
             length_list = musics.length
             musicName.innerHTML = musics[idx]
             message.style.display = 'none'
+            paused = false
+            play_music()
             }else{
                 message.style.display = 'block'
                 message.innerHTML = 'Nenhuma música foi encontrada!'
