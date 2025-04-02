@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="light">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,213 +13,504 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="styles.css" />
     <script src="/eel.js"></script>
     <script src="feather.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .text-animate {
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .text-animate span {
+            display: inline-block;
+            min-width: 100%;
+            animation: marquee 7s linear infinite alternate;
+        }
+
+
+        /* Tema escuro */
+        html.dark {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --button-bg: #272727;
+            --button-hover: #333333;
+            --slider-bg: #4a4a4a;
+        }
+
+        /* Tema claro (padrão) */
+        html.light {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --text-secondary: #4b5563;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --button-bg: #e5e7eb;
+            --button-hover: #d1d5db;
+            --slider-bg: #d1d5db;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-card {
+            background-color: var(--card-bg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-text {
+            color: var(--text-color);
+        }
+
+        .theme-text-secondary {
+            color: var(--text-secondary);
+        }
+
+        .theme-button {
+            background-color: var(--button-bg);
+        }
+
+        .theme-button:hover {
+            background-color: var(--button-hover);
+        }
+
+        .theme-primary {
+            background-color: var(--primary-color);
+        }
+
+        .theme-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .theme-slider {
+            background-color: var(--slider-bg);
+        }
+
+        /* Estilos para o range slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 5px;
+            background: var(--slider-bg);
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="imgBox">
-            <img id="cover" src="img.jpg" alt="" />
+
+<body class="overflow-y-hidden">
+    <div class="container overflow-y-hidden mx-auto max-w-md p-6 theme-card rounded-lg mt-8">
+        <div class="flex justify-end mb-2">
+            <button id="theme-toggle" class="p-2 rounded-full theme-button">
+                <i data-feather="moon" class="w-5 h-5"></i>
+            </button>
         </div>
-        <div class="musicName">
-            <h1 id="musicName">Music</h1>
-        </div>
-        <span id="volume" style="display:none">100%</span>
-        <div class="time_container" style="display:none">
-            <span class="time_start">00:00</span><input class="slider2" type="range" value="0" min="0" max="" onchange="controlPos(this.value)"/><span class="time_end">00:00</span>
-        </div>
-        <div class="controls">
-            <div onclick="prev_sound()">
-                <i class="feather-45" data-feather="arrow-left"></i>
+
+        <div class="flex flex-col items-center mb-6">
+            <div class="w-64 h-64 rounded-lg overflow-hidden shadow-md mb-4">
+                <img id="cover" src="img.jpg" alt="Album Cover" class="w-full h-full object-cover" />
             </div>
-            <div class="play" onclick="play_music()">
-                <i class="feather-45" data-feather="play" color="black"></i>
-            </div>
-            <div class="play" id="pause" onclick="pause_music()" style="display:none">
-                <i class="feather-45" data-feather="pause" color="black"></i>
-            </div>
-            <div onclick="next_sound()">
-                <i class="feather-45" data-feather="arrow-right"></i>
+            <div class="text-center w-full">
+                <h1 id="musicName-container" class="text-2xl font-bold theme-text overflow-hidden h-8">
+                    <div class="text-animate">
+                        <span id="musicName">Music</span>
+                    </div>
+                </h1>
+                <span id="volume" class="text-sm theme-text-secondary mt-1 hidden">100%</span>
             </div>
         </div>
-        <div>
-            <input style="display:none;" class="slider" type="range" min="0" max="100" value="100" onchange="controlVol(this.value)" />
+
+        <div id="time_container" class="flex items-center mb-6 hidden">
+            <span class="time_start text-xs theme-text-secondary w-10">00:00</span>
+            <input class="slider2 flex-1 mx-2 h-2 theme-slider rounded-full appearance-none" type="range" value="0"
+                min="0" max="100" onchange="controlPos(this.value)" />
+            <span class="time_end text-xs theme-text-secondary w-10 text-right">00:00</span>
         </div>
-        <div>
-            <input id="path" readonly type="text" value=""/>
-            <button onclick="update_musics()">Update</button>
+
+        <div class="flex justify-center space-x-8 mb-6">
+            <button onclick="prev_sound()"
+                class="p-3 rounded-full theme-button hover:theme-button-hover transition-colors">
+                <i data-feather="skip-back" class="w-6 h-6"></i>
+            </button>
+            <button id="play_button" onclick="play_music()"
+                class="p-4 rounded-full theme-primary hover:theme-primary-hover transition-colors">
+                <i data-feather="play" class="w-8 h-8 text-white"></i>
+            </button>
+            <button id="pause_button" onclick="pause_music()"
+                class="p-4 rounded-full theme-primary hover:theme-primary-hover transition-colors hidden">
+                <i data-feather="pause" class="w-8 h-8 text-white"></i>
+            </button>
+            <button onclick="next_sound()"
+                class="p-3 rounded-full theme-button hover:theme-button-hover transition-colors">
+                <i data-feather="skip-forward" class="w-6 h-6"></i>
+            </button>
         </div>
-        <center>
-            <h3 id="message" style="color:red;display: none;"></h3>
-        </center>
-        <audio id="audioplayer" controls="all" style="position:absolute; top:0; left:0; display:none;">
+
+        <div class="mb-6 hidden" id="volume_container">
+            <div class="flex items-center">
+                <i data-feather="volume-2" class="w-5 h-5 theme-text-secondary mr-2"></i>
+                <input class="slider flex-1 h-2 theme-slider rounded-full appearance-none" type="range" min="0"
+                    max="100" value="100" onchange="controlVol(this.value)" />
+            </div>
+        </div>
+
+        <div class="flex mb-4">
+            <input id="path" readonly type="text"
+                class="flex-1 p-2 border theme-text-secondary bg-transparent rounded-l-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value="" />
+            <button onclick="update_musics()"
+                class="theme-primary hover:theme-primary-hover text-white px-4 py-2 rounded-r-md transition-colors">
+                <i data-feather="refresh-cw" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <div class="text-center">
+            <h3 id="message" class="text-red-500 font-medium hidden"></h3>
+        </div>
+
+        <audio id="audioplayer" controls="all" class="hidden"></audio>
     </div>
-    <script>
-        feather.replace()
-    </script>
-    <script>
-        let path
-        let musics
-        let pathInput = document.getElementById('path')
-        let musicName = document.querySelector('#musicName')
-        let idx = 0
-        let length_list
-        let audioplayer = document.querySelector('#audioplayer')
-        let playState = document.querySelector('.play')
-        let pauseState = document.querySelector('#pause')
-        let cover = document.querySelector('#cover')
-        let timer
-        let slider2 = document.querySelector('.slider')
-        let slider = document.querySelector('.slider2')
-        let time_container = document.querySelector('.time_container')
-        let time_end = document.querySelector('.time_end')
-        let time_start = document.querySelector('.time_start')
-        let paused = false
-        let threading
-        let volume = document.querySelector('#volume')
-        let message = document.querySelector('#message')
-        
 
-        async function update_musics() {
-            await pause_music()
-            path = await eel.select_path()()
-            pathInput.value = path
-            // path = pathInput.value
-            // if (path[-1] !== '/' | path[-1]!== '\\') {
-            //     path = path + '/'
-            // }
-            musics = await eel.get_musics(path)()
-            if (musics.length > 0) {
-            idx=0
-            length_list = musics.length
-            musicName.innerHTML = musics[idx]
-            message.style.display = 'none'
-            paused = false
-            play_music()
-            }else{
-                message.style.display = 'block'
-                message.innerHTML = 'Nenhuma música foi encontrada!'
-                musicName.className="musicName"
-            }
-        }
+    <script>
+        // Inicializa os ícones do Feather
+        feather.replace();
 
-        function threadingStart(){
-            threading = setInterval(()=>{
-                if (!audioplayer.playing && audioplayer.currentTime == audioplayer.duration){
-                    idx = idx + 1
-                    paused = false
-                    if (idx >= length_list){
-                        idx = 0
-                        paused = false
-                    }
-                    play_music()
+        // Alternância de tema
+        const ThemeToggle = (() => {
+            const htmlElement = document.documentElement;
+            const themeToggleButton = document.getElementById('theme-toggle');
+            const themeIcon = document.createElement('i');
+
+            const setTheme = (themeName) => {
+                htmlElement.className = themeName;
+                localStorage.setItem('theme', themeName);
+                updateThemeIcon(themeName);
+            };
+
+            const updateThemeIcon = (themeName) => {
+                themeToggleButton.innerHTML = '';
+                // Atualizar o ícone baseado no tema atual
+                if (themeName === 'dark') {
+                    themeIcon.setAttribute('data-feather', 'sun');
+
+                } else {
+                    themeIcon.setAttribute('data-feather', 'moon');
                 }
-            },2000)
-        }
+                themeToggleButton.appendChild(themeIcon);
+                // Recarregar os ícones do Feather
+                feather.replace();
+            };
 
-        function threadingStop(){
-            clearInterval(threading)
-        }
+            const toggleTheme = () => {
+                if (htmlElement.classList.contains('dark')) {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            };
 
-        async function getMusics() {
-            path = await eel.start()()
-            pathInput.value = path
-            musics = await eel.get_musics(path)()
-            if (musics.length > 0) {
-            length_list = musics.length
-            musicName.innerHTML = musics[idx]
-            }else{
-                message.style.display = 'block'
-                message.innerHTML = 'Nenhuma música foi encontrada!'
-                musicName.className="musicName"
-            }
-        }
-        getMusics()
+            // Verificar o tema salvo no localStorage
+            const init = () => {
+                const isDark = (localStorage.getItem('theme') == 'system' || localStorage.getItem('theme') == null) ? window.matchMedia('(prefers-color-scheme: dark)').matches : localStorage.getItem('theme') == 'dark';
+                const savedTheme = isDark ? 'dark' : 'light';
+                setTheme(savedTheme);
 
+                themeToggleButton.addEventListener('click', toggleTheme);
+            };
+
+            return {
+                init
+            };
+        })();
+
+        // Player de música - Módulo principal
+        const AudioPlayer = (() => {
+            // State (Estado)
+            let state = {
+                path: '',
+                musics: [],
+                currentIndex: 0,
+                isPaused: false,
+                timer: null,
+                threadingInterval: null
+            };
+
+            // Cache dos elementos DOM
+            const elements = {
+                pathInput: document.getElementById('path'),
+                musicNameContainer: document.getElementById('musicName-container'),
+                musicName: document.getElementById('musicName'),
+                audioplayer: document.getElementById('audioplayer'),
+                playButton: document.getElementById('play_button'),
+                pauseButton: document.getElementById('pause_button'),
+                cover: document.getElementById('cover'),
+                slider: document.querySelector('.slider'),
+                progressSlider: document.querySelector('.slider2'),
+                timeContainer: document.getElementById('time_container'),
+                timeEnd: document.querySelector('.time_end'),
+                timeStart: document.querySelector('.time_start'),
+                volume: document.getElementById('volume'),
+                volumeContainer: document.getElementById('volume_container'),
+                message: document.getElementById('message')
+            };
+
+            // Inicialização
+            const init = async () => {
+                state.path = await eel.start()();
+                elements.pathInput.value = state.path;
+                await loadMusics();
+            };
+
+            // Carrega as músicas do diretório
+            const loadMusics = async () => {
+                state.musics = await eel.get_musics(state.path)();
+
+                if (state.musics.length > 0) {
+                    updateMusicInfo();
+                    elements.message.classList.add('hidden');
+                } else {
+                    elements.message.classList.remove('hidden');
+                    elements.message.textContent = 'Nenhuma música foi encontrada!';
+                }
+            };
+
+            // Atualiza o diretório de músicas
+            const updateDirectory = async () => {
+                await pauseMusic();
+                const result = await eel.select_path()();
+                if (!result) {
+                    if (state.isPaused && !state.timer){
+                        state.isPaused = false;
+                    }
+                    return;
+                }
+                state.path = result;
+                elements.pathInput.value = state.path;
+
+                state.musics = await eel.get_musics(state.path)();
+
+                if (state.musics.length > 0) {
+                    state.currentIndex = 0;
+                    state.isPaused = false;
+                    updateMusicInfo();
+                    elements.message.classList.add('hidden');
+                    playMusic();
+                } else {
+                    elements.message.classList.remove('hidden');
+                    elements.message.textContent = 'Nenhuma música foi encontrada!';
+                }
+            };
+
+            // Atualiza o nome da música atual
+            const updateMusicInfo = () => {
+                if (state.musics.length > 0) {
+                    elements.musicName.textContent = state.musics[state.currentIndex];
+
+                    // Verifica se o nome da música é longo o suficiente para animar
+                    const musicNameWidth = elements.musicName.offsetWidth;
+                    const containerWidth = elements.musicNameContainer.offsetWidth;
+
+                    if (musicNameWidth > containerWidth) {
+                        elements.musicName.parentElement.classList.add('text-animate');
+                    } else {
+                        elements.musicName.parentElement.classList.remove('text-animate');
+                    }
+                }
+            };
+
+            // Controla o volume
+            const setVolume = (value) => {
+                elements.audioplayer.volume = value / 100;
+                elements.volume.textContent = value + '%';
+                elements.volume.classList.remove('hidden');
+            };
+
+            // Controla a posição da música
+            const setPosition = (value) => {
+                clearInterval(state.timer);
+                elements.audioplayer.currentTime = value;
+                elements.progressSlider.value = value;
+                startProgressTimer();
+            };
+
+            // Inicia o timer de progresso
+            const startProgressTimer = async () => {
+                setTimeout(() => {
+                    state.timer = setInterval(async () => {
+                        elements.progressSlider.max = elements.audioplayer.duration;
+                        elements.timeEnd.textContent = await eel.time_f(elements.audioplayer.duration)();
+                        elements.progressSlider.value = elements.audioplayer.currentTime;
+                        elements.timeStart.textContent = await eel.time_f(elements.audioplayer.currentTime)();
+                    }, 999);
+                }, 999);
+            };
+
+            // Pausa a música
+            const pauseMusic = () => {
+                clearInterval(state.timer);
+                elements.audioplayer.pause();
+                elements.playButton.classList.remove('hidden');
+                elements.pauseButton.classList.add('hidden');
+                state.isPaused = true;
+            };
+
+            // Toca a música
+            const playMusic = async () => {
+                if (state.isPaused) {
+                    elements.audioplayer.play();
+                    elements.playButton.classList.add('hidden');
+                    elements.pauseButton.classList.remove('hidden');
+                    startProgressTimer();
+                } else {
+                    const info = await eel.create_file(state.path + state.musics[state.currentIndex])();
+                    const dateNow = Date.now().toString();
+
+                    elements.audioplayer.innerHTML = `
+                        <source src="${info[0]}?${dateNow}" type="audio/${info[1]}" />
+                    `;
+
+                    elements.audioplayer.load();
+                    elements.audioplayer.play();
+                    elements.cover.src = info[2];
+                    updateMusicInfo();
+
+                    elements.progressSlider.classList.remove('hidden');
+                    elements.timeContainer.classList.remove('hidden');
+                    elements.playButton.classList.add('hidden');
+                    elements.pauseButton.classList.remove('hidden');
+                    elements.volume.classList.remove('hidden');
+                    elements.volumeContainer.classList.remove('hidden');
+
+                    startProgressTimer();
+                }
+
+                startThreading();
+            };
+
+            // Música anterior
+            const prevTrack = () => {
+                state.currentIndex = state.currentIndex - 1;
+                if (state.currentIndex < 0) {
+                    state.currentIndex = state.musics.length - 1;
+                }
+                state.isPaused = false;
+                playMusic();
+            };
+
+            // Próxima música
+            const nextTrack = () => {
+                state.currentIndex = state.currentIndex + 1;
+                if (state.currentIndex >= state.musics.length) {
+                    state.currentIndex = 0;
+                }
+                state.isPaused = false;
+                playMusic();
+            };
+
+            // Inicia o threading para verificar o fim da música
+            const startThreading = () => {
+                clearInterval(state.threadingInterval);
+                state.threadingInterval = setInterval(() => {
+                    if (!elements.audioplayer.playing && elements.audioplayer.currentTime == elements.audioplayer.duration) {
+                        nextTrack();
+                    }
+                }, 2000);
+            };
+
+            // Encerra o threading
+            const stopThreading = () => {
+                clearInterval(state.threadingInterval);
+            };
+
+            // Retorno da API pública
+            return {
+                init,
+                updateDirectory,
+                setVolume,
+                setPosition,
+                pauseMusic,
+                playMusic,
+                prevTrack,
+                nextTrack
+            };
+        })();
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            ThemeToggle.init();
+            AudioPlayer.init();
+        });
+
+        // Funções globais para os eventos de click no HTML
         function controlVol(value) {
-            audioplayer.volume = value/100
-            volume.innerHTML = value+'%'
+            AudioPlayer.setVolume(value);
         }
 
-        function controlPos(value){
-            clearInterval(timer)
-            audioplayer.currentTime =value
-            slider.value = value
-            setTimeout(()=>{
-                timer = setInterval(async()=>{
-                    slider.max = audioplayer.duration
-                    time_end.innerHTML = await eel.time_f(audioplayer.duration)()
-                    slider.value = audioplayer.currentTime
-                    time_start.innerHTML = await eel.time_f(audioplayer.currentTime)()
-                }, 999)
-            }, 999)
+        function controlPos(value) {
+            AudioPlayer.setPosition(value);
         }
 
-        function pause_music(){
-            clearInterval(timer)
-            audioplayer.pause()
-            playState.style.display = 'inline'
-            pauseState.style.display = 'none'
-            paused = true
+        function pause_music() {
+            AudioPlayer.pauseMusic();
         }
 
-        async function play_music(){
-            if (paused) {
-                audioplayer.play()
-                playState.style.display = 'none'
-                pauseState.style.display = 'inline'
-                timer = setInterval(async()=>{
-                    slider.max = audioplayer.duration
-                    time_end.innerHTML = await eel.time_f(audioplayer.duration)()
-                    slider.value = audioplayer.currentTime
-                    time_start.innerHTML = await eel.time_f(audioplayer.currentTime)()
-                }, 999)     
-            }else{
-            let info = await eel.create_file(path+musics[idx])()
-            let date_now = Date.now().toString()
-            audioplayer.innerHTML = `
-            <source src="${info[0]}?${date_now}" type="audio/${info[1]}" />
-            `
-            audioplayer.load()
-            audioplayer.play()
-            cover.src = info[2]
-            musicName.innerHTML = musics[idx]
-            slider2.style.display = 'block'
-            time_container.style.display = 'block'
-            playState.style.display = 'none'
-            pauseState.style.display = 'inline'
-            volume.style.display = 'block'
-            timer = setInterval(async()=>{
-                    slider.max = audioplayer.duration
-                    time_end.innerHTML = await eel.time_f(audioplayer.duration)()
-                    slider.value = audioplayer.currentTime
-                    time_start.innerHTML = await eel.time_f(audioplayer.currentTime)()
-                }, 999)           
-            }
-            threadingStart()
+        function play_music() {
+            AudioPlayer.playMusic();
         }
 
-        async function prev_sound() {
-            idx = idx - 1
-            if(idx <= -1){
-                idx = length_list -1
-            }
-            paused = false
-            play_music()
+        function prev_sound() {
+            AudioPlayer.prevTrack();
         }
 
-        async function next_sound() {
-            idx = idx + 1
-            if (idx >= length_list){
-                idx = 0
-            }
-            paused = false
-            play_music()
+        function next_sound() {
+            AudioPlayer.nextTrack();
         }
-    </script>
-    <script>
-        window.resizeTo(400,625)
+
+        function update_musics() {
+            AudioPlayer.updateDirectory();
+        }
     </script>
 </body>
+
 </html>

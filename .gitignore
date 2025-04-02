@@ -4,3 +4,10 @@ build/
 *.spec
 web/temp.mp3
 web/temp_art.png
+venv/
+node_modules/
+*.egg-info/
+*.egg
+*.log
+*.pyo
+*.pyd

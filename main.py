@@ -15,6 +15,8 @@ def select_path():
     root.attributes("-topmost", True)
     root.withdraw()
     directory_path = filedialog.askdirectory()
+    if not directory_path:
+        return None
     return directory_path+'/'
 
 @eel.expose
@@ -45,6 +47,6 @@ def create_file(music):
 
     return [f'temp.{ext}',ext,art]
 
-eel.start('index.html', size=(400,625))
+eel.start('index.html', size=(425,700))
 
 #Repack test
