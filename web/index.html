@@ -140,7 +140,14 @@
 </head>
 
 <body class="overflow-y-hidden">
-    <div class="container overflow-y-hidden mx-auto max-w-md p-6 theme-card rounded-lg mt-8">
+    <div class="container overflow-y-hidden mx-auto max-w-md p-6 theme-card rounded-lg">
+        <div class="flex justify-start mb-2">
+            <button onclick="switch_play_direction()"
+            id="direction-toggle" class="p-2 rounded-full theme-button">
+                <i data-feather="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
         <div class="flex justify-end mb-2">
             <button id="theme-toggle" class="p-2 rounded-full theme-button">
                 <i data-feather="moon" class="w-5 h-5"></i>
@@ -273,7 +280,8 @@
                 currentIndex: 0,
                 isPaused: false,
                 timer: null,
-                threadingInterval: null
+                threadingInterval: null,
+                playDirection: 'forward'
             };
 
             // Cache dos elementos DOM
@@ -453,7 +461,14 @@
                 clearInterval(state.threadingInterval);
                 state.threadingInterval = setInterval(() => {
                     if (!elements.audioplayer.playing && elements.audioplayer.currentTime == elements.audioplayer.duration) {
-                        nextTrack();
+                        if (state.playDirection == 'forward') {
+                            nextTrack();
+                        } else if (state.playDirection == 'backward') {
+                            prevTrack();
+                        } else {
+                            elements.audioplayer.currentTime = 0;
+                            elements.audioplayer.play();
+                        }
                     }
                 }, 2000);
             };
@@ -461,6 +476,21 @@
             // Encerra o threading
             const stopThreading = () => {
                 clearInterval(state.threadingInterval);
+            };
+
+            const switchPlayDirection = () => {
+                const directionToggle = document.getElementById('direction-toggle');
+                if (state.playDirection == 'forward') {
+                    directionToggle.innerHTML = '<i data-feather="arrow-left" class="w-5 h-5"></i>';
+                    state.playDirection = 'backward';
+                } else if (state.playDirection == 'backward') {
+                    directionToggle.innerHTML = '<i data-feather="repeat" class="w-5 h-5"></i>';
+                    state.playDirection = 'repeat';
+                } else {
+                    directionToggle.innerHTML = '<i data-feather="arrow-right" class="w-5 h-5"></i>';
+                    state.playDirection = 'forward';
+                }
+                feather.replace();
             };
 
             // Retorno da API pública
@@ -472,7 +502,8 @@
                 pauseMusic,
                 playMusic,
                 prevTrack,
-                nextTrack
+                nextTrack,
+                switchPlayDirection
             };
         })();
 
@@ -509,6 +540,10 @@
 
         function update_musics() {
             AudioPlayer.updateDirectory();
+        }
+
+        function switch_play_direction() {
+            AudioPlayer.switchPlayDirection();
         }
     </script>
 </body>

@@ -47,6 +47,6 @@ def create_file(music):
 
     return [f'temp.{ext}',ext,art]
 
-eel.start('index.html', size=(425,700))
+eel.start('index.html', size=(425,690))
 
 #Repack test
